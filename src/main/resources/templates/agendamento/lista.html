@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layouts/main_layout :: head(title='Automação de Alertas de Segurança')}">
+</head>
+<body>
+<nav th:replace="~{layouts/main_layout :: nav}"></nav>
+
+<div class="container" th:fragment="content">
+
+    <div class="bg-info-clearfix">
+        <a class="btn btn-primary btn-sm mt-5 mb-1 float-right" th:href="@{criar}">Novo Agendamento</a>
+    </div>
+    <div class="bg-info-clearfix">
+        <a class="btn btn-primary btn-sm mt-5 mb-1 float-left" th:href="@{lista}">Atualizar</a>
+    </div>
+
+    <table class="table table-striped table-sm table-hover">
+        <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Data / Hora</th>
+            <th scope="col">Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="agendamento: ${agendamentos}">
+            <td th:text="${agendamento.getId()}"></td>
+            <td th:text="${agendamento.getTipoVulnerabilidade().getNome()}"></td>
+            <td th:text="${agendamento.getDataHoraAgendamento()}"></td>
+            <td th:text="${agendamento.getStatusAgendamento().name()}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layouts/main_layout :: head(title='Automação de Alertas de Segurança')}">
+</head>
+<body>
+<nav th:replace="~{layouts/main_layout :: nav}"></nav>
+
+<div class="container" th:fragment="content">
+    <ul class="list-group" th:each="tipo:${tipos}">
+        <li class="list-group-item" th:text="${tipo.getNome()}">Cras justo odio</li>
+    </ul>
+
+</div>
+
+</body>
+</html>

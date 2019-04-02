@@ -18,6 +18,20 @@ public class TipoVulnerabilidade {
     @Lob
     private String modeloMensagem;
     
-    @OneToMany(mappedBy = "tipoVulnerabilidade")
+    @OneToMany(cascade = CascadeType.ALL,
+            mappedBy = "tipoVulnerabilidade",
+            orphanRemoval = true)
     private List<Vulnerabilidade> vulnerabilidades = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL,
+            mappedBy = "tipoVulnerabilidade",
+            orphanRemoval = true)
+    private List<Agendamento> agendamentos = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "TipoVulnerabilidade{" +
+                "id=" + id +
+                '}';
+    }
 }

@@ -32,14 +32,17 @@ public class Vulnerabilidade {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<VulnerabilidadeCliente> clientes = new ArrayList<>();
+    private List<VulnerabilidadeCliente> ipClientes = new ArrayList<>();
     
     @ManyToOne
-    @NonNull
+    @JoinColumn(name="tipo_vulnerabilidade_id")
     private TipoVulnerabilidade tipoVulnerabilidade;
-    
-    
-    
-    
-    
+
+
+    @Override
+    public String toString() {
+        return "Vulnerabilidade{" +
+                "id=" + id +
+                '}';
+    }
 }

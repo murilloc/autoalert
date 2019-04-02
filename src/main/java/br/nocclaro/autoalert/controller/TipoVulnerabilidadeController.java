@@ -24,13 +24,14 @@ public class TipoVulnerabilidadeController {
     
     public TipoVulnerabilidadeController(TipoVulnerabilidadeRepository tipoVulnerabilidadeRepository) {
         this.tipoVulnerabilidadeRepository = tipoVulnerabilidadeRepository;
+
     }
     
     
-    @GetMapping("/")
+    @GetMapping("/tipos")
     public String list(Model model) {
-        model.addAttribute("tiposVulnerabilidade", tipoVulnerabilidadeRepository.findAll());
-        return null;
+        model.addAttribute("tipos", tipoVulnerabilidadeRepository.findAll());
+        return "tipo/list";
     }
     
     @GetMapping("tipo/{id}")
@@ -46,7 +47,7 @@ public class TipoVulnerabilidadeController {
     
     @GetMapping("tipo/submit")
     public String newTipoForm(Model model) {
-        model.addAttribute("link", new TipoVulnerabilidade());
+        model.addAttribute("tipo", new TipoVulnerabilidade());
         return "tipo/submit";
     }
     

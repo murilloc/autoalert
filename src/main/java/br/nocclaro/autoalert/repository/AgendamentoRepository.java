@@ -1,10 +1,9 @@
 package br.nocclaro.autoalert.repository;
 
-import br.nocclaro.autoalert.domain.TipoVulnerabilidade;
+import br.nocclaro.autoalert.domain.Agendamento;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TipoVulnerabilidadeRepository extends JpaRepository<TipoVulnerabilidade, Long> {
-
+public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> {
 }

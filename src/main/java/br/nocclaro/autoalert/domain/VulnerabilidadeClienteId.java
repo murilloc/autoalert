@@ -20,8 +20,18 @@ public class VulnerabilidadeClienteId implements Serializable {
     
     @Column(name = "id_cliente")
     private Long clienteId;
+
     
     @NonNull
     private String ipAddress;
-    
+
+
+    @Override
+    public String toString() {
+        return "VulnerabilidadeClienteId{" +
+                "vulnerabilidadeId=" + vulnerabilidadeId +
+                ", clienteId=" + clienteId +
+                ", ipAddress='" + ipAddress + '\'' +
+                '}';
+    }
 }

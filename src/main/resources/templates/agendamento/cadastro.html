@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layouts/main_layout :: head(title='Automação de Alertas de Segurança')}">
+</head>
+<body>
+<nav th:replace="~{layouts/main_layout :: nav}"></nav>
+
+<div class="container" th:fragment="content">
+
+
+    <!--/*@thymesVar id="agendamento" type=""*/-->
+    <form method="POST" th:action="@{/agendamento/criar}" th:object="${agendamento}">
+
+        <div class="form-group">
+
+            <div class="bg-info-clearfix">
+                <a class="btn btn-primary btn-sm mt-5 mb-1 float-right" th:href="@{lista}">Lista Agendamentos</a>
+            </div>
+
+            <div class="mt-3 mb-4">
+                <select class="form-control" id="tipos" th:field="*{tipoVulnerabilidade}">
+                    <option th:value="${null}">Selecione o tipo de vulnerabilidade</option>
+                    <option th:each="tipo : ${listaTipoVulnerabilidade}" th:text="${tipo.nome}" th:value="${tipo.id}">
+                        Opção 1
+                    </option>
+                </select>
+            </div>
+            <div class="mt-3 mb-4">
+                <label for="resultadoTeste">Resultado dos Testes:</label>
+                <textarea class="form-control" id="resultadoTeste" rows="20" th:field="*{resultadoTeste}"></textarea>
+            </div>
+            <button class="btn btn-primary" type="submit">Submeter</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>
