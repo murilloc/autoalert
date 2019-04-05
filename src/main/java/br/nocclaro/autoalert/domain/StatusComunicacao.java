@@ -1,8 +1,9 @@
 package br.nocclaro.autoalert.domain;
 
 public enum StatusComunicacao {
-    AGUARDANDO,
+    AGUARDANDO_ENVIO,
     ENVIADO,
     FALHOU,
-    CANCELADO
+    CANCELADO,
+    CLIENTE_NAO_LOCALIZADO
 }

@@ -4,6 +4,7 @@ package br.nocclaro.autoalert.service.business;
 import br.nocclaro.autoalert.domain.Cliente;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -18,17 +19,20 @@ public class RestProcessorImpl implements RestProcessorService {
         RestTemplateBuilder builder = new RestTemplateBuilder();
         RestTemplate restTemplate = builder.build();
 
-        String jsonTemplate = restTemplate.getForObject("https://rdap.registro.br/ip/" + ip, String.class);
+        try {
+            String jsonTemplate = restTemplate.getForObject("https://rdap.registro.br/ip/" + ip, String.class);
+            cliente.setEmail(getEmailFromResponseBody(jsonTemplate));
+            cliente.setNome(getNomeClientFromResponseBody(jsonTemplate));
 
-        cliente.setEmail(getEmailFromResponseBody(jsonTemplate));
-        cliente.setNome(getNomeClientFromResponseBody(jsonTemplate));
+            if (cliente.getNome().isEmpty() || cliente.getEmail().isEmpty()) {
+                return null;
+            }
 
-        if (cliente.getNome().isEmpty() || cliente.getEmail().isEmpty()) {
+        } catch (HttpClientErrorException ex) {
             return null;
         }
 
         return cliente;
-
     }
 
 

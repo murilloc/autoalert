@@ -15,10 +15,10 @@ import java.io.Serializable;
 @Data
 public class VulnerabilidadeClienteId implements Serializable {
     
-    @Column(name = "id_vulnerabilidade")
+    @Column(name = "vulnerabilidade_id")
     private Long vulnerabilidadeId;
     
-    @Column(name = "id_cliente")
+    @Column(name = "cliente_id")
     private Long clienteId;
 
     

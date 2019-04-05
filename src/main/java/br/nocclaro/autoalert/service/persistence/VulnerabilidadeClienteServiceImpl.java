@@ -1,5 +1,7 @@
 package br.nocclaro.autoalert.service.persistence;
 
+import br.nocclaro.autoalert.domain.Cliente;
+import br.nocclaro.autoalert.domain.StatusComunicacao;
 import br.nocclaro.autoalert.domain.VulnerabilidadeCliente;
 import br.nocclaro.autoalert.domain.VulnerabilidadeClienteId;
 import br.nocclaro.autoalert.repository.VulnerabilidadeClienteRepository;
@@ -57,7 +59,29 @@ public class VulnerabilidadeClienteServiceImpl implements VulnerabilidadeCliente
     }
 
     @Override
+    public List<VulnerabilidadeCliente> buscarPorStatus(StatusComunicacao statusComunicacao) {
+        return vulnerabilidadeClienteRepository.findByStatusComunicacao((statusComunicacao));
+    }
+
+    @Override
     public Page<VulnerabilidadeCliente> findPaginated(Pageable pageable) {
+
         return null;
+    }
+
+    @Override
+    public List<VulnerabilidadeCliente> buscarAguardandoComunicacao() {
+        return vulnerabilidadeClienteRepository.findByStatusComunicacao(StatusComunicacao.AGUARDANDO_ENVIO);
+    }
+
+    @Override
+    public List<VulnerabilidadeCliente> buscarListaVulnerabilidadesPorCliente(Cliente cliente) {
+        return vulnerabilidadeClienteRepository.findByStatusComunicacao(StatusComunicacao.AGUARDANDO_ENVIO);
+    }
+
+
+    @Override
+    public List<VulnerabilidadeCliente> buscarVulnerabilidadesPorClienteParaEnvio(StatusComunicacao statusComunicacao, Cliente cliente) {
+        return vulnerabilidadeClienteRepository.findByStatusComunicacaoAndCliente(statusComunicacao, cliente);
     }
 }

@@ -20,7 +20,7 @@ public class VulnerabilidadeCliente {
     @EmbeddedId
     private VulnerabilidadeClienteId id;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("vulnerabilidadeId")
     private Vulnerabilidade vulnerabilidade;
     

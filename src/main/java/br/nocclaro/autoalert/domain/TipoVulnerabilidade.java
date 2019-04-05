@@ -17,6 +17,8 @@ public class TipoVulnerabilidade {
     private String nome;
     @Lob
     private String modeloMensagem;
+    @Column(name="nome_template")
+    private String templateName;
     
     @OneToMany(cascade = CascadeType.ALL,
             mappedBy = "tipoVulnerabilidade",

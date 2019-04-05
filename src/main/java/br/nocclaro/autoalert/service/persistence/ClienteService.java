@@ -24,4 +24,6 @@ public interface ClienteService {
     Cliente buscarPorEmail(String email);
 
     Page<Cliente> findPaginated(Pageable pageable);
+
+    List<Cliente> findClientesAguardandoComunicacao();
 }

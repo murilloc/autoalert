@@ -62,4 +62,9 @@ public class ClienteServiceImpl implements ClienteService {
     public Page<Cliente> findPaginated(Pageable pageable) {
         return null;
     }
+
+    @Override
+    public List<Cliente> findClientesAguardandoComunicacao() {
+        return clienteRepository.findDistinctAguardandoComunicacao();
+    }
 }
