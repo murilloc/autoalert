@@ -36,25 +36,27 @@ public class FreeMarkerTemplateWriter {
         try {
             template = freeMarkerConfig.getTemplate(templateName);
         } catch (IOException e) {
-            logger.error("Erro na configuração do FreeMarker");
+            logger.error("Erro na configuração do template FreeMarker");
         }
 
         Map<String, String> data = new HashMap<>();
-        String renderedDataTable =  tableRendererService.getRenderedDataTable(vulnerabilidadesCliente);
+        String renderedDataTable = tableRendererService.getRenderedDataTable(vulnerabilidadesCliente);
 
         data.put("tabelaVulnerabilidades", renderedDataTable);
 
         String html = null;
+
         try {
             html = FreeMarkerTemplateUtils.processTemplateIntoString(template, data);
+            return html;
         } catch (IOException e) {
-            logger.error("Erro ao renderizar a tabela");
-            e.printStackTrace();
+            logger.error("Erro ao cirat a string da tabela");
+            return "Erro ao cirat a string da tabela";
         } catch (TemplateException e) {
             logger.error("Erro ao renderizar a tabela");
+            return "Erro ao renderizar a tabela";
         }
 
-        return html;
 
     }
 

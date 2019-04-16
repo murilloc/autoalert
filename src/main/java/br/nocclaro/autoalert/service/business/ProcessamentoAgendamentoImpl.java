@@ -3,12 +3,14 @@ package br.nocclaro.autoalert.service.business;
 import br.nocclaro.autoalert.components.MailMessageModel;
 import br.nocclaro.autoalert.domain.Agendamento;
 import br.nocclaro.autoalert.domain.Cliente;
+import br.nocclaro.autoalert.domain.LogAgendamento;
 import br.nocclaro.autoalert.domain.StatusComunicacao;
 import br.nocclaro.autoalert.domain.Vulnerabilidade;
 import br.nocclaro.autoalert.domain.VulnerabilidadeCliente;
 import br.nocclaro.autoalert.domain.VulnerabilidadeClienteId;
 import br.nocclaro.autoalert.service.business.freemarker.FreeMarkerTemplateWriter;
 import br.nocclaro.autoalert.service.persistence.ClienteService;
+import br.nocclaro.autoalert.service.persistence.LogAgendamentoSerivce;
 import br.nocclaro.autoalert.service.persistence.VulnerabilidadeClienteService;
 import br.nocclaro.autoalert.service.persistence.VulnerabilidadeService;
 import org.slf4j.Logger;
@@ -27,17 +29,15 @@ public class ProcessamentoAgendamentoImpl implements ProcessamentoAgendamentoSer
 
     private static final Logger logger = LoggerFactory.getLogger(ProcessamentoAgendamentoImpl.class);
 
-    private UtilService utilService;
-    private RestProcessorService restProcessorService; // Consulta o webservice
-
-    private VulnerabilidadeService vulnerabilidadeService;
-    private ClienteService clienteService;
-
-    private FreeMarkerTemplateWriter templateWriter;
-
     @Autowired
     private EmailService emailService;
 
+    private UtilService utilService;
+    private RestProcessorService restProcessorService; // Consulta o webservice
+    private VulnerabilidadeService vulnerabilidadeService;
+    private ClienteService clienteService;
+    private FreeMarkerTemplateWriter templateWriter;
+    private LogAgendamentoSerivce logAgendamentoService;
     private VulnerabilidadeClienteService vulnerabilidadeClienteService;
 
     HashMap<String, String> modelo = new HashMap<>();
@@ -47,14 +47,16 @@ public class ProcessamentoAgendamentoImpl implements ProcessamentoAgendamentoSer
                                         RestProcessorService restProcessorService,
                                         VulnerabilidadeService vulnerabilidadeService,
                                         ClienteService clienteService,
-                                        FreeMarkerTemplateWriter templateWriter,
-                                        VulnerabilidadeClienteService vulnerabilidadeClienteService) {
+                                        LogAgendamentoSerivce logAgendamentoService,
+                                        VulnerabilidadeClienteService vulnerabilidadeClienteService,
+                                        FreeMarkerTemplateWriter templateWriter) {
         this.utilService = utilService;
         this.restProcessorService = restProcessorService;
         this.vulnerabilidadeService = vulnerabilidadeService;
         this.clienteService = clienteService;
-        this.templateWriter = templateWriter;
+        this.logAgendamentoService = logAgendamentoService;
         this.vulnerabilidadeClienteService = vulnerabilidadeClienteService;
+        this.templateWriter = templateWriter;
     }
 
     @Override
@@ -68,7 +70,7 @@ public class ProcessamentoAgendamentoImpl implements ProcessamentoAgendamentoSer
         for (Cliente cliente : listaClientesParaComunicacao) {
             logger.info(cliente.toString());
             List<VulnerabilidadeCliente> vulnerabilidadesPorCliente =
-                    vulnerabilidadeClienteService.buscarVulnerabilidadesPorClienteParaEnvio(StatusComunicacao.AGUARDANDO_ENVIO, cliente);
+                    vulnerabilidadeClienteService.buscarVulnerabilidadesPorClienteParaEnvio(StatusComunicacao.AGUARDANDO_ENVIO, cliente, agendamento);
             String messageText = templateWriter.composeMessage(agendamento.getTipoVulnerabilidade().getTemplateName(), vulnerabilidadesPorCliente);
 
             MailMessageModel mailMessageModel = new MailMessageModel();
@@ -80,12 +82,18 @@ public class ProcessamentoAgendamentoImpl implements ProcessamentoAgendamentoSer
             mailMessageModel.setTo("murilloc@gmail.com");
             mailMessageModel.setMessage(messageText);
 
+            LogAgendamento logAgendamento = new LogAgendamento();
+            logAgendamento.setDataHora(LocalDateTime.now());
+            logAgendamento.setAgendamento(agendamento);
 
-            if (emailService.sendMessage(mailMessageModel)) {
+            if (emailService.sendMessage(mailMessageModel, logAgendamento)) {
                 salvarResultadoEnvio(vulnerabilidadesPorCliente, StatusComunicacao.ENVIADO);
             } else {
                 salvarResultadoEnvio(vulnerabilidadesPorCliente, StatusComunicacao.FALHOU);
             }
+
+            logAgendamentoService.salvar(logAgendamento);
+
         }
     }
 
@@ -123,7 +131,7 @@ public class ProcessamentoAgendamentoImpl implements ProcessamentoAgendamentoSer
             } else {
                 cadastrarErro(modelo, agendamento);
             }
-            Thread.sleep(1000);
+            Thread.sleep(3000);
         }
     }
 

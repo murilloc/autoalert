@@ -1,6 +1,7 @@
 package br.nocclaro.autoalert.service.persistence;
 
 
+import br.nocclaro.autoalert.domain.Agendamento;
 import br.nocclaro.autoalert.domain.Cliente;
 import br.nocclaro.autoalert.domain.StatusComunicacao;
 import br.nocclaro.autoalert.domain.VulnerabilidadeCliente;
@@ -30,7 +31,7 @@ public interface VulnerabilidadeClienteService {
 
     List<VulnerabilidadeCliente> buscarListaVulnerabilidadesPorCliente(Cliente cliente);
 
-    List<VulnerabilidadeCliente> buscarVulnerabilidadesPorClienteParaEnvio(StatusComunicacao statusComunicacao, Cliente cliente);
+    List<VulnerabilidadeCliente> buscarVulnerabilidadesPorClienteParaEnvio(StatusComunicacao statusComunicacao, Cliente cliente, Agendamento agendamento);
 
     Page<VulnerabilidadeCliente> findPaginated(Pageable pageable);
     

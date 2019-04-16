@@ -6,7 +6,5 @@ import java.util.List;
 
 public interface TableRendererService {
 
-
-
     String getRenderedDataTable(List<VulnerabilidadeCliente> vulnerabilidadeClientes);
 }

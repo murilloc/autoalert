@@ -1,5 +1,6 @@
 package br.nocclaro.autoalert.service.persistence;
 
+import br.nocclaro.autoalert.domain.Agendamento;
 import br.nocclaro.autoalert.domain.Cliente;
 import br.nocclaro.autoalert.domain.StatusComunicacao;
 import br.nocclaro.autoalert.domain.VulnerabilidadeCliente;
@@ -81,7 +82,7 @@ public class VulnerabilidadeClienteServiceImpl implements VulnerabilidadeCliente
 
 
     @Override
-    public List<VulnerabilidadeCliente> buscarVulnerabilidadesPorClienteParaEnvio(StatusComunicacao statusComunicacao, Cliente cliente) {
-        return vulnerabilidadeClienteRepository.findByStatusComunicacaoAndCliente(statusComunicacao, cliente);
+    public List<VulnerabilidadeCliente> buscarVulnerabilidadesPorClienteParaEnvio(StatusComunicacao statusComunicacao, Cliente cliente, Agendamento agendamento) {
+        return vulnerabilidadeClienteRepository.findByStatusComunicacaoAndClienteAndAgendamento(statusComunicacao, cliente,agendamento);
     }
 }

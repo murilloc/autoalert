@@ -47,6 +47,17 @@ public class Agendamento {
     )
     private List<VulnerabilidadeCliente> vulerabilidades = new ArrayList<>();
 
+
+    @OneToMany(
+            mappedBy = "agendamento",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<LogAgendamento> logs = new ArrayList<>();
+
+
+
+
     @Override
     public String toString() {
         return "Agendamento{" +

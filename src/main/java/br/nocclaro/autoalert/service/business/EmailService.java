@@ -1,6 +1,8 @@
 package br.nocclaro.autoalert.service.business;
 
 import br.nocclaro.autoalert.components.MailMessageModel;
+import br.nocclaro.autoalert.domain.LogAgendamento;
+import br.nocclaro.autoalert.domain.StatusLog;
 import br.nocclaro.autoalert.service.business.freemarker.FreeMarkerTemplateWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,15 +29,19 @@ public class EmailService {
         this.templateWriter = templateWriter;
     }
 
-    public boolean sendMessage(MailMessageModel messageModel) {
+    public boolean sendMessage(MailMessageModel messageModel, LogAgendamento logAgendamento) {
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = null;
+        String info= "";
         try {
             helper = new MimeMessageHelper(message,
                     MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                     StandardCharsets.UTF_8.name());
         } catch (MessagingException e) {
-            logger.error("Não foi possível enviar a mensagem: Erro ao compor a mensagem");
+            info = "Não foi possível enviar a mensagem: Erro ao compor a mensagem";
+            logger.error(info);
+            logAgendamento.setInfo(info);
+            logAgendamento.setStatus(StatusLog.FALHOU);
             return false;
         }
 
@@ -46,10 +52,21 @@ public class EmailService {
             helper.setSubject(messageModel.getSubject());
             helper.setFrom(messageModel.getFrom());
             emailSender.send(message);
+
+            info = "Mensagem enviada com sucesso";
+            logger.error(info);
+            logAgendamento.setInfo(info);
+            logAgendamento.setStatus(StatusLog.OK);
+
+
         } catch (MessagingException e) {
-            logger.error("Não foi possível enviar a mensagem: Erro no envio");
+            info = "Não foi possível enviar a mensagem: Erro no envio";
+            logger.error(info);
+            logAgendamento.setInfo(info);
+            logAgendamento.setStatus(StatusLog.FALHOU);
             return false;
         }
+
 
         return true;
     }
