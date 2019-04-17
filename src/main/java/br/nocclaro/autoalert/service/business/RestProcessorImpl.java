@@ -21,6 +21,7 @@ public class RestProcessorImpl implements RestProcessorService {
 
         try {
             String jsonTemplate = restTemplate.getForObject("https://rdap.registro.br/ip/" + ip, String.class);
+            assert jsonTemplate != null;
             cliente.setEmail(getEmailFromResponseBody(jsonTemplate));
             cliente.setNome(getNomeClientFromResponseBody(jsonTemplate));
 

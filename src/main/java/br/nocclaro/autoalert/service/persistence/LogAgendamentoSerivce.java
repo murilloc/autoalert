@@ -17,5 +17,7 @@ public interface LogAgendamentoSerivce {
 
     List<LogAgendamento> buscarTodos();
 
+    List<LogAgendamento> buscarPorAgendamentoId(Long id);
+
 
 }

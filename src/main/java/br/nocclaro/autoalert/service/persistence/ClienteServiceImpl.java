@@ -39,31 +39,31 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
-    public Cliente buscarPorNome(String nome) {
-        return clienteRepository.findByNome(nome);
-    }
-
-    @Override
+    @Transactional(readOnly = true)
     public Cliente buscarPorEmail(String email) {
         return clienteRepository.findByEmail(email);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Cliente> buscarPorId(Long id) {
         return clienteRepository.findById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Cliente> buscarTodos() {
         return clienteRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Cliente> findPaginated(Pageable pageable) {
         return null;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Cliente> findClientesAguardandoComunicacao() {
         return clienteRepository.findDistinctAguardandoComunicacao();
     }

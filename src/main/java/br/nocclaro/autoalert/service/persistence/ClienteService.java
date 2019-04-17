@@ -20,7 +20,6 @@ public interface ClienteService {
 
     List<Cliente> buscarTodos();
 
-    Cliente buscarPorNome(String nome);
     Cliente buscarPorEmail(String email);
 
     Page<Cliente> findPaginated(Pageable pageable);

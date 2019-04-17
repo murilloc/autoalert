@@ -3,7 +3,6 @@ package br.nocclaro.autoalert.service.business;
 import br.nocclaro.autoalert.components.MailMessageModel;
 import br.nocclaro.autoalert.domain.LogAgendamento;
 import br.nocclaro.autoalert.domain.StatusLog;
-import br.nocclaro.autoalert.service.business.freemarker.FreeMarkerTemplateWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -20,31 +19,28 @@ public class EmailService {
     private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
 
     private JavaMailSender emailSender;
-    private MailMessageModel mailMessageBody;
 
-    private FreeMarkerTemplateWriter templateWriter;
 
-    public EmailService(JavaMailSender emailSender, FreeMarkerTemplateWriter templateWriter) {
+    public EmailService(JavaMailSender emailSender) {
         this.emailSender = emailSender;
-        this.templateWriter = templateWriter;
+
     }
 
-    public boolean sendMessage(MailMessageModel messageModel, LogAgendamento logAgendamento) {
+    boolean sendMessage(MailMessageModel messageModel, LogAgendamento logAgendamento) {
         MimeMessage message = emailSender.createMimeMessage();
-        MimeMessageHelper helper = null;
-        String info= "";
+        MimeMessageHelper helper;
+        String info;
         try {
             helper = new MimeMessageHelper(message,
                     MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                     StandardCharsets.UTF_8.name());
         } catch (MessagingException e) {
-            info = "Não foi possível enviar a mensagem: Erro ao compor a mensagem";
+            info = "Não foi possível enviar a mensagem: Erro ao compor a mensagem (" + messageModel.getSubject() + ")" ;
             logger.error(info);
             logAgendamento.setInfo(info);
             logAgendamento.setStatus(StatusLog.FALHOU);
             return false;
         }
-
 
         try {
             helper.setTo(messageModel.getTo());
@@ -53,20 +49,19 @@ public class EmailService {
             helper.setFrom(messageModel.getFrom());
             emailSender.send(message);
 
-            info = "Mensagem enviada com sucesso";
+        info = "Mensagem de alerta (" + messageModel.getSubject() + ") enviada com sucesso para o email " + messageModel.getTo();
             logger.error(info);
             logAgendamento.setInfo(info);
             logAgendamento.setStatus(StatusLog.OK);
 
 
         } catch (MessagingException e) {
-            info = "Não foi possível enviar a mensagem: Erro no envio";
+            info = "Não foi possível enviar a mensagem: Erro no envio para o email " + messageModel.getTo();
             logger.error(info);
             logAgendamento.setInfo(info);
             logAgendamento.setStatus(StatusLog.FALHOU);
             return false;
         }
-
 
         return true;
     }

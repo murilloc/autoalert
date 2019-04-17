@@ -36,16 +36,19 @@ public class VulnerabilidadeServiceImpl implements VulnerabilidadeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Vulnerabilidade> buscarPorId(Long id) {
         return vulnerabilidadeRepository.findById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Vulnerabilidade> buscarTodos() {
         return vulnerabilidadeRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Vulnerabilidade> findPaginated(Pageable pageable) {
         return null;
     }

@@ -55,33 +55,39 @@ public class VulnerabilidadeClienteServiceImpl implements VulnerabilidadeCliente
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<VulnerabilidadeCliente> buscarTodos() {
         return vulnerabilidadeClienteRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<VulnerabilidadeCliente> buscarPorStatus(StatusComunicacao statusComunicacao) {
         return vulnerabilidadeClienteRepository.findByStatusComunicacao((statusComunicacao));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<VulnerabilidadeCliente> findPaginated(Pageable pageable) {
 
         return null;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<VulnerabilidadeCliente> buscarAguardandoComunicacao() {
         return vulnerabilidadeClienteRepository.findByStatusComunicacao(StatusComunicacao.AGUARDANDO_ENVIO);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<VulnerabilidadeCliente> buscarListaVulnerabilidadesPorCliente(Cliente cliente) {
         return vulnerabilidadeClienteRepository.findByStatusComunicacao(StatusComunicacao.AGUARDANDO_ENVIO);
     }
 
 
     @Override
+    @Transactional(readOnly = true)
     public List<VulnerabilidadeCliente> buscarVulnerabilidadesPorClienteParaEnvio(StatusComunicacao statusComunicacao, Cliente cliente, Agendamento agendamento) {
         return vulnerabilidadeClienteRepository.findByStatusComunicacaoAndClienteAndAgendamento(statusComunicacao, cliente,agendamento);
     }

@@ -15,7 +15,6 @@ import br.nocclaro.autoalert.service.persistence.VulnerabilidadeClienteService;
 import br.nocclaro.autoalert.service.persistence.VulnerabilidadeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -29,8 +28,7 @@ public class ProcessamentoAgendamentoImpl implements ProcessamentoAgendamentoSer
 
     private static final Logger logger = LoggerFactory.getLogger(ProcessamentoAgendamentoImpl.class);
 
-    @Autowired
-    private EmailService emailService;
+    private final EmailService emailService;
 
     private UtilService utilService;
     private RestProcessorService restProcessorService; // Consulta o webservice
@@ -40,8 +38,8 @@ public class ProcessamentoAgendamentoImpl implements ProcessamentoAgendamentoSer
     private LogAgendamentoSerivce logAgendamentoService;
     private VulnerabilidadeClienteService vulnerabilidadeClienteService;
 
-    HashMap<String, String> modelo = new HashMap<>();
-    List<HashMap<String, String>> items = new ArrayList<>();
+    private HashMap<String, String> modelo;
+    private List<HashMap<String, String>> items;
 
     public ProcessamentoAgendamentoImpl(UtilService utilService,
                                         RestProcessorService restProcessorService,
@@ -49,7 +47,7 @@ public class ProcessamentoAgendamentoImpl implements ProcessamentoAgendamentoSer
                                         ClienteService clienteService,
                                         LogAgendamentoSerivce logAgendamentoService,
                                         VulnerabilidadeClienteService vulnerabilidadeClienteService,
-                                        FreeMarkerTemplateWriter templateWriter) {
+                                        FreeMarkerTemplateWriter templateWriter, EmailService emailService) {
         this.utilService = utilService;
         this.restProcessorService = restProcessorService;
         this.vulnerabilidadeService = vulnerabilidadeService;
@@ -57,6 +55,9 @@ public class ProcessamentoAgendamentoImpl implements ProcessamentoAgendamentoSer
         this.logAgendamentoService = logAgendamentoService;
         this.vulnerabilidadeClienteService = vulnerabilidadeClienteService;
         this.templateWriter = templateWriter;
+        this.emailService = emailService;
+        items = new ArrayList<>();
+        modelo = new HashMap<>();
     }
 
     @Override
@@ -75,10 +76,9 @@ public class ProcessamentoAgendamentoImpl implements ProcessamentoAgendamentoSer
 
             MailMessageModel mailMessageModel = new MailMessageModel();
             mailMessageModel.setFrom("abuse@embratel.net.br");
-            mailMessageModel.setSubject("Alerta de vulnerabilidade:  "
-                    + agendamento.getTipoVulnerabilidade().getNome().toLowerCase() + "  " + cliente.getEmail());
-            //mailMessageModel.setTo(cliente.getEmail());
+            mailMessageModel.setSubject("Alerta de vulnerabilidade:  " + agendamento.getTipoVulnerabilidade().getNome().toLowerCase());
 
+            //mailMessageModel.setTo(cliente.getEmail());
             mailMessageModel.setTo("murilloc@gmail.com");
             mailMessageModel.setMessage(messageText);
 
@@ -101,13 +101,14 @@ public class ProcessamentoAgendamentoImpl implements ProcessamentoAgendamentoSer
     private void salvarResultadoEnvio(List<VulnerabilidadeCliente> vulnerabilidadeClienteList, StatusComunicacao status) {
         for (VulnerabilidadeCliente vulnerabilidadeCliente : vulnerabilidadeClienteList) {
             vulnerabilidadeCliente.setStatusComunicacao(status);
+            vulnerabilidadeCliente.setDataHoraEnvio(LocalDateTime.now());
             vulnerabilidadeClienteService.salvar(vulnerabilidadeCliente);
         }
     }
 
     private void preparaListaParaEnvio(Agendamento agendamento, List<String> testResultLines) throws InterruptedException {
         for (String line : testResultLines) {
-            Boolean encontrouCliente = false;
+            boolean encontrouCliente = false;
             List<String> campos = utilService.separaCampos(line);
             modelo.put("ip", campos.get(0).trim());
             modelo.put("asn", campos.get(1).trim());
@@ -129,14 +130,14 @@ public class ProcessamentoAgendamentoImpl implements ProcessamentoAgendamentoSer
             if (encontrouCliente) {
                 ativarModelo(modelo, agendamento);
             } else {
-                cadastrarErro(modelo, agendamento);
+                cadastrarErro(modelo);
             }
             Thread.sleep(3000);
         }
     }
 
 
-    private void cadastrarErro(HashMap<String, String> modelo, Agendamento agendamento) {
+    private void cadastrarErro(HashMap<String, String> modelo) {
         logger.error("Ip do cliente não localizado........: " + modelo.get("ip"));
     }
 

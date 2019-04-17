@@ -57,6 +57,7 @@ public class AgendamentoServiceImpl implements AgendamentoService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Agendamento> findPaginated(Pageable pageable) {
         List<Agendamento> agendamentos = agendamentoRepository.findAll();
         int pageSize = pageable.getPageSize();

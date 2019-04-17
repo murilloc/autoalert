@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layouts/main_layout :: head(title='Automação de Alertas de Segurança')}">
+</head>
+<body>
+<nav th:replace="~{layouts/main_layout :: nav}"></nav>
+
+<div class="container" th:fragment="content">
+
+
+    <div class="bg-info-clearfix">
+        <a class="btn btn-primary btn-sm mt-5 mb-1 float-left" th:href="@{'/resultado/log/' + ${codigo}}">Atualizar</a>
+    </div>
+
+    <div class="bg-info-clearfix">
+        <a class="btn btn-primary btn-sm mt-5 mb-1 float-right" th:href="@{/agendamento/lista}">Lista Agendamentos</a>
+    </div>
+
+    <table class="table table-striped table-sm table-hover">
+        <thead>
+        <tr>
+            <th scope="col">Vulnerabilidade</th>
+            <th scope="col">Data / Hora</th>
+            <th scope="col">Info</th>
+            <th scope="col">Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="log: ${logs}">
+            <td class="text-nowrap" th:text="${log.getAgendamento().getTipoVulnerabilidade().getNome()}"></td>
+            <td class="text-nowrap" th:text="${log.dataHora}"></td>
+            <td th:text="${log.getInfo()}"></td>
+            <td class="text-nowrap" th:text="${log.getStatus()}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <footer th:replace="~{layouts/main_layout :: footer}"></footer>
+</div>
+</body>
+</html>

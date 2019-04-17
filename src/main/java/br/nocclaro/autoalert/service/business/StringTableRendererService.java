@@ -14,7 +14,7 @@ public class StringTableRendererService implements TableRendererService {
     @Override
     public String getRenderedDataTable(List<VulnerabilidadeCliente> vulnerabilidadesCliente) {
 
-        String result = "";
+        StringBuilder result = new StringBuilder();
 
         char[] linha = new char[85];
         Arrays.fill(linha, ' ');
@@ -49,13 +49,13 @@ public class StringTableRendererService implements TableRendererService {
             System.arraycopy(dataHora, 0, linha, separatorPos[3] + 2, dataHora.length);
             System.arraycopy(resultado, 0, linha, separatorPos[4] + 2, resultado.length);
 
-            result += String.copyValueOf(linha) + "<br>";
+            result.append(String.copyValueOf(linha)).append("<br>");
 
 
         }
 
 
-        return result;
+        return result.toString();
     }
 
 }

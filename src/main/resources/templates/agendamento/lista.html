@@ -28,11 +28,14 @@
             <td th:text="${agendamento.getId()}"></td>
             <td th:text="${agendamento.getTipoVulnerabilidade().getNome()}"></td>
             <td th:text="${agendamento.getDataHoraAgendamento()}"></td>
-            <td th:text="${agendamento.getStatusAgendamento().name()}"></td>
+            <td>
+                <a  th:href="@{'/resultado/log/' + ${agendamento.getId()}}" th:text="${agendamento.getStatusAgendamento().name()}"/>
+            </td>
         </tr>
         </tbody>
     </table>
-
 </div>
+
+<footer th:replace="~{layouts/main_layout :: footer}"></footer>
 </body>
 </html>
