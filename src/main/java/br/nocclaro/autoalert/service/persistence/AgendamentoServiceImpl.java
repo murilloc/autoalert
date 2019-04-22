@@ -53,7 +53,8 @@ public class AgendamentoServiceImpl implements AgendamentoService {
     @Override
     @Transactional(readOnly = true)
     public List<Agendamento> buscarTodos() {
-        return agendamentoRepository.findAll();
+
+        return agendamentoRepository.findAllByOrderByIdDesc();
     }
 
     @Override

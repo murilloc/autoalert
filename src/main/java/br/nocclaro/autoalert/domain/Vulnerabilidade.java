@@ -26,6 +26,7 @@ public class Vulnerabilidade {
     private LocalDateTime dataHora;
     @NonNull
     private String resultado;
+    private String payload;
     
     @OneToMany(
             mappedBy = "vulnerabilidade",

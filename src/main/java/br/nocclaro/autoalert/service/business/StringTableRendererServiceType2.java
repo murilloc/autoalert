@@ -9,21 +9,22 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
-public class StringTableRendererService implements TableRendererService {
+public class StringTableRendererServiceType2 implements TableRendererService {
 
     @Override
     public String getRenderedDataTable(List<VulnerabilidadeCliente> vulnerabilidadesCliente) {
 
         StringBuilder result = new StringBuilder();
 
-        char[] linha = new char[85];
+        char[] linha = new char[119];
         Arrays.fill(linha, ' ');
-        int[] separatorPos = {0, 17, 26, 35, 63};
+        int[] separatorPos = {0, 17, 26, 35, 58, 71};
         char separator = '|';
         linha[separatorPos[1]] = separator;
         linha[separatorPos[2]] = separator;
         linha[separatorPos[3]] = separator;
         linha[separatorPos[4]] = separator;
+        linha[separatorPos[5]] = separator;
 
 
         for (VulnerabilidadeCliente vulnerabilidadeCliente : vulnerabilidadesCliente) {
@@ -41,6 +42,7 @@ public class StringTableRendererService implements TableRendererService {
 
             char[] dataHora = formatedDataHora.toCharArray();
             char[] resultado = vulnerabilidadeCliente.getVulnerabilidade().getResultado().toCharArray();
+            char[] payload = vulnerabilidadeCliente.getVulnerabilidade().getPayload().toCharArray();
 
 
             System.arraycopy(ip, 0, linha, separatorPos[0], ip.length);
@@ -48,12 +50,12 @@ public class StringTableRendererService implements TableRendererService {
             System.arraycopy(status, 0, linha, separatorPos[2] + 2, status.length);
             System.arraycopy(dataHora, 0, linha, separatorPos[3] + 2, dataHora.length);
             System.arraycopy(resultado, 0, linha, separatorPos[4] + 2, resultado.length);
+            System.arraycopy(payload, 0, linha, separatorPos[5] + 2, payload.length);
 
             result.append(String.copyValueOf(linha)).append("<br>");
 
 
         }
-
 
         return result.toString();
     }

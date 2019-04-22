@@ -3,6 +3,7 @@ package br.nocclaro.autoalert.service.business;
 import br.nocclaro.autoalert.components.MailMessageModel;
 import br.nocclaro.autoalert.domain.Agendamento;
 import br.nocclaro.autoalert.domain.Cliente;
+import br.nocclaro.autoalert.domain.IdentificadorVulnerabilidade;
 import br.nocclaro.autoalert.domain.LogAgendamento;
 import br.nocclaro.autoalert.domain.StatusComunicacao;
 import br.nocclaro.autoalert.domain.Vulnerabilidade;
@@ -72,7 +73,7 @@ public class ProcessamentoAgendamentoImpl implements ProcessamentoAgendamentoSer
             logger.info(cliente.toString());
             List<VulnerabilidadeCliente> vulnerabilidadesPorCliente =
                     vulnerabilidadeClienteService.buscarVulnerabilidadesPorClienteParaEnvio(StatusComunicacao.AGUARDANDO_ENVIO, cliente, agendamento);
-            String messageText = templateWriter.composeMessage(agendamento.getTipoVulnerabilidade().getTemplateName(), vulnerabilidadesPorCliente);
+            String messageText = templateWriter.composeMessage(agendamento, vulnerabilidadesPorCliente);
 
             MailMessageModel mailMessageModel = new MailMessageModel();
             mailMessageModel.setFrom("abuse@embratel.net.br");
@@ -113,8 +114,13 @@ public class ProcessamentoAgendamentoImpl implements ProcessamentoAgendamentoSer
             modelo.put("ip", campos.get(0).trim());
             modelo.put("asn", campos.get(1).trim());
             modelo.put("status", campos.get(2).trim());
-            modelo.put("data", campos.get(3).trim());
+            modelo.put("data", utilService.substituirPor("[a-z][A-Z] ", " ", campos.get(3)).trim());
+            logger.info(modelo.get("data"));
             modelo.put("diagnostico", campos.get(4).trim());
+
+            if (agendamento.getTipoVulnerabilidade().getIdentificadorVulnerabilidade() == IdentificadorVulnerabilidade.SERVICO_DEVICE_DISCOVERY_HABILITADO) {
+                modelo.put("payload", campos.get(5).trim());
+            }
 
             Cliente cliente = restProcessorService.getClienteFromIp(campos.get(0).trim());
 
@@ -185,9 +191,17 @@ public class ProcessamentoAgendamentoImpl implements ProcessamentoAgendamentoSer
     private void getNovaVulnerabilidade(HashMap<String, String> modelo, Agendamento agendamento, Vulnerabilidade novaVulnerabilidade) {
         novaVulnerabilidade.setAsn(modelo.get("asn"));
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        novaVulnerabilidade.setDataHora(LocalDateTime.parse(modelo.get("data").substring(0, 19), formatter));
+        String data = modelo.get("data");
+        data = utilService.substituirPor("([A-Z])", " ", data).trim();
+        data = utilService.substituirPor("([a-z])", " ", data).trim();
+        logger.debug(data);
+        novaVulnerabilidade.setDataHora(LocalDateTime.parse(data, formatter));
         novaVulnerabilidade.setResultado(modelo.get("diagnostico"));
         novaVulnerabilidade.setStatus(modelo.get("status"));
+
+        if (agendamento.getTipoVulnerabilidade().getIdentificadorVulnerabilidade() == IdentificadorVulnerabilidade.SERVICO_DEVICE_DISCOVERY_HABILITADO) {
+            novaVulnerabilidade.setPayload(modelo.get("payload"));
+        }
         novaVulnerabilidade.setTipoVulnerabilidade(agendamento.getTipoVulnerabilidade());
     }
 

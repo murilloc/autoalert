@@ -19,6 +19,9 @@ public class TipoVulnerabilidade {
     private String modeloMensagem;
     @Column(name="nome_template")
     private String templateName;
+
+    @Enumerated(EnumType.STRING)
+    private IdentificadorVulnerabilidade identificadorVulnerabilidade;
     
     @OneToMany(cascade = CascadeType.ALL,
             mappedBy = "tipoVulnerabilidade",

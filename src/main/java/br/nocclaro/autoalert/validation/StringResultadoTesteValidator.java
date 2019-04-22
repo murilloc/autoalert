@@ -36,7 +36,7 @@ public class StringResultadoTesteValidator implements ConstraintValidator<Result
 
         for (String line : lines) {
             String[] testFields = separaCampos(line);
-            if (testFields.length != 5 || !validaIP(testFields[0])) {
+            if ((testFields.length < 5) || (testFields.length > 6) || !validaIP(testFields[0])) {
                 result = false;
                 break;
             }

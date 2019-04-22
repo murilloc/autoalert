@@ -19,12 +19,13 @@ public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
+
     @NonNull
     private String nome;
 
     @Email
     @NonNull
+    @Column(unique = true)
     private String email;
     
     @OneToMany(
